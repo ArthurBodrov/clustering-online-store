@@ -107,18 +107,56 @@ Recency = Текущий день -(минус) последняя сделка 
 Найдем дату последней покупки у каждого пользователя.
 
 ```python
-for user in users['user_id']:
-    users.loc[users['user_id'] == user, 'last_ordered_date'] = \
-    smartphones[smartphones['user_id'] == user]['event_date'].iloc[-1]
-# использую `.iloc[-1]` из-за упорядоченности данных, последняя покупка = последняя запись
+last_ordered_date = smartphones.groupby(['user_id'])['event_date'].agg('max')
+
+zipped_last_ordered_date = zip(n_orders.index, n_orders.values)
+
+for index, value in zipped_last_ordered_date:
+    users.loc[users['user_id'] == index, 'last_ordered_date'] = value
 ```
 
 <img src='img/last_ordered_float_head.png'/> 
 
-Тип `last_ordered_date` - float, приведем к типу `int`
+Вычислим количество, сделанных покупок каждым пользователем.
 
 ```python
-users['last_ordered_date'] = users['last_ordered_date'].astype(int)
+n_orders = smartphones.groupby(['user_id']).agg('count')['price']
+
+zipped_n_orders = zip(n_orders.index, n_orders.values)
+
+for index, value in zipped_n_orders:
+    users.loc[users['user_id'] == index, 'n_orders'] = value
 ```
 
-<img src='img/last_ordered_head.png'/> 
+<img src='img/n_orders.png'/> 
+
+Просуммируем цены заказов, чтобы получить `Monetary`.
+
+```python
+amount = smartphones.groupby(['user_id'])['price'].agg('sum')
+
+zipped_amount = zip(amount.index, amount.values)
+
+for index, value in zipped_amount:
+    users.loc[users['user_id'] == index, 'amount'] = value
+```
+
+<img src='img/amount.png'/> 
+
+И так последний штрих в вычислениях. Нужно  преобразовать `last_ordered_date` в `recency`,  то есть вычесть самый-самый последний день, указанные в данных **(20191031)**, из последнего совершения покупки определенного клиента.
+
+```python
+max_date = smartphones['event_date'].max()
+
+users['order_time_offset'] = max_date - users['last_ordered_date'])
+```
+<img src='img/offset.png'/> 
+
+Дропнем уже ненужную колонку `last_ordered_date`.
+
+```python
+users = users.drop('last_ordered_date', axis=1)
+```
+
+Все готов для RFM. Наведем красоту: переименуем колонки, упорядочим, уберем точку из значений, закастив их к типу `int`. И получим такой результат:
+<img src='img/rfm.png'/> 
