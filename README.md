@@ -172,6 +172,40 @@ for index, value in zipped_amount:
 
 Посмотрим на распределение и выбросы фич. Отобразим гистограмму, QQPlot и Boxplot.
 
+<details>
+<summary>Код визуализации</summary>
+```python
+
+fig, axes = plt.subplots(1, 3)
+rec_hist = sns.distplot(ax=axes[0], a=rfm['Recency'], kde=True)
+rec_hist.set_title('Distribution of `Recency`')
+
+fre_hist = sns.distplot(ax=axes[1], a=rfm['Frequency'], kde=True)
+fre_hist.set_title('Distribution of `Frequency`')
+
+mon_hist = sns.distplot(ax=axes[2], a=rfm['Monetary'], kde=True)
+mon_hist.set_title('Distribution of `Monetary`');
+
+from scipy import stats
+
+fig, axes = plt.subplots(1, 3)
+stats.probplot(x=rfm['Recency'], dist="norm", plot=axes[0])
+stats.probplot(x=rfm['Frequency'], dist="norm", plot=axes[1])
+stats.probplot(x=rfm['Monetary'], dist="norm", plot=axes[2]);
+
+fig, axes = plt.subplots(1, 3)
+rec_box = sns.boxplot(ax=axes[0], y=rfm['Recency'])
+rec_box.set_title('Boxplot of `Recency`')
+
+fre_box = sns.boxplot(ax=axes[1], y=rfm['Frequency'])
+fre_box.set_title('Boxplot of `Frequency`')
+
+mon_box = sns.boxplot(ax=axes[2], y=rfm['Monetary'])
+mon_box.set_title('Boxplot of `Monetary`');
+```
+</details>
+
+
 <img src='img/hist.png'/> 
 <img src='img/qqplot.png'/> 
 <img src='img/boxplot.png'/> 
