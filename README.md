@@ -111,6 +111,8 @@ users = pd.DataFrame({'user_id': smartphones['user_id'].unique()})
 
 Уников кстати **160_437** штук.
 
+#### Recency
+
 **R**ecency (давность) - давность прошлой сделки. 
 
 Recency = `current_date` - `last_ordered_date`. 
@@ -130,7 +132,7 @@ for index, value in zipped_last_ordered_date:
 
 <img src='img/order_time_offset.png'/> 
 
-**F**requency - кол-во покупок.
+#### Frequency
 
 Вычислим количество, сделанных покупок каждым пользователем.
 
@@ -145,7 +147,7 @@ for index, value in zipped_n_orders:
 
 <img src='img/n_orders.png'/> 
 
-**M**onetary - сумма сделок&
+#### Monetary
 
 Просуммируем цены заказов, чтобы получить `Monetary`.
 
