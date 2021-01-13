@@ -165,21 +165,6 @@ for index, value in zipped_amount:
 
 <img src='img/amount.png'/> 
 
-И так последний штрих в вычислениях. Нужно  преобразовать `last_ordered_date` в `recency`,  то есть вычесть самый-самый последний день, указанные в данных **(20191031)**, из последнего совершения покупки определенного клиента.
-
-```python
-max_date = smartphones['event_date'].max()
-
-users['order_time_offset'] = max_date - users['last_ordered_date'])
-```
-<img src='img/offset.png'/> 
-
-Дропнем уже ненужную колонку `last_ordered_date`.
-
-```python
-users = users.drop('last_ordered_date', axis=1)
-```
-
 Все готов для RFM. Наведем красоту: переименуем колонки, упорядочим, уберем точку из значений, закастив их к типу `int`. И получим такой результат:
 <img src='img/rfm.png'/> 
 
